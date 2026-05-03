@@ -92,18 +92,7 @@ export default function SignIn() {
             </h1>
           </div>
 
-          {/* Status Alert */}
-          {serverStatus === 'offline' && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Server Connection Error</AlertTitle>
-              <AlertDescription>
-                Could not connect to backend at <span className="font-mono bg-destructive/20 px-1 rounded">{API_URL}</span>.
-                <br />
-                Please check if your <code>VITE_API_URL</code> is set correctly.
-              </AlertDescription>
-            </Alert>
-          )}
+          
 
           <div className="space-y-2">
             <h2 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Space Grotesk' }}>
@@ -160,14 +149,23 @@ export default function SignIn() {
                 Forgot password?
               </Link>
             </div>
-
-            <Button
+              
+               <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/">
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-white text-lg px-8 py-6 h-auto">
+                  Back
+                </Button>
+              </Link>
+                 <Button
               type="submit"
-              className="w-full h-12 text-base font-medium bg-accent hover:bg-accent/90"
+              className="bg-accent hover:bg-accent/90 text-white text-lg px-8 py-6 h-auto"
               disabled={isLoading}
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
+            </div>
+          
+           
           </form>
 
           <div className="text-center">

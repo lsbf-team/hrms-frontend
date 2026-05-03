@@ -42,7 +42,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function Dashboard() {
   const { user } = useAuth();
 
-  if (user?.role === 'admin' || user?.role === 'hr') {
+  if (user?.role === 'ADMIN' || user?.role === 'HR') {
     return <AdminDashboard />;
   }
 

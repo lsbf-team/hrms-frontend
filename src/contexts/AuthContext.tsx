@@ -1,7 +1,7 @@
 import { API_URL } from '@/config';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type UserRole = 'employee' | 'admin' | 'hr';
+export type UserRole = 'EMPLOYEE' | 'ADMIN' | 'HR';
 
 export interface User {
   id: string;
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
-      const userData = { ...data.user, token: data.token }; // Keep token for auth
+      const userData = { ...data.user, token: data.jwt }; // Keep token for auth
 
       setUser(userData);
       localStorage.setItem('dayflow_user', JSON.stringify(userData));

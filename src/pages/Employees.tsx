@@ -16,17 +16,17 @@ export default function EmployeesPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
+        username: '',
         email: '',
-        employeeId: '',
-        role: 'employee',
+        id: '',
+        role: 'EMPLOYEE',
         password: ''
     });
 
     const fetchUsers = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/users`, {
+            const res = await fetch(`${API_URL}/api/auth/fetch-users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -47,8 +47,8 @@ export default function EmployeesPage() {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
             const url = editingUser
-                ? `${API_URL}/api/users/${editingUser.id}`
-                : `${API_URL}/api/users`;
+                ? `${API_URL}/api/auth/update-user/${editingUser.id}`
+                : `${API_URL}/api/auth/register`;
 
             const method = editingUser ? 'PUT' : 'POST';
 
@@ -67,7 +67,7 @@ export default function EmployeesPage() {
             toast.success(editingUser ? 'Employee updated' : 'Employee created');
             setIsDialogOpen(false);
             setEditingUser(null);
-            setFormData({ name: '', email: '', employeeId: '', role: 'employee', password: '' });
+            setFormData({ username: '', email: '', id: '', role: 'EMPLOYEE', password: '' });
             fetchUsers();
         } catch (error: any) {
             toast.error(error.message);
@@ -77,9 +77,9 @@ export default function EmployeesPage() {
     const handleEditClick = (user: any) => {
         setEditingUser(user);
         setFormData({
-            name: user.name,
+            username: user.username,
             email: user.email,
-            employeeId: user.employeeId,
+            id: user.id,
             role: user.role,
             password: '' // Don't show password, optional to update
         });
@@ -90,7 +90,7 @@ export default function EmployeesPage() {
         if (!confirm('Are you sure you want to delete this employee?')) return;
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/users/${id}`, {
+            const res = await fetch(`${API_URL}/api/auth/delete-user/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -105,7 +105,7 @@ export default function EmployeesPage() {
     };
 
     const filteredUsers = users.filter(u =>
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        //u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.employeeId.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -118,7 +118,7 @@ export default function EmployeesPage() {
                     setIsDialogOpen(open);
                     if (!open) {
                         setEditingUser(null);
-                        setFormData({ name: '', email: '', employeeId: '', role: 'employee', password: '' });
+                        setFormData({ username: '', email: '', id: '', role: 'EMPLOYEE', password: '' });
                     }
                 }}>
                     <DialogTrigger asChild>
@@ -130,25 +130,22 @@ export default function EmployeesPage() {
                         </DialogHeader>
                         <form onSubmit={handleCreateOrUpdateUser} className="space-y-4">
                             <div className="space-y-2">
-                                <Label>Full Name</Label>
-                                <Input required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                                <Label>User Name</Label>
+                                <Input required value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Email</Label>
                                 <Input type="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                             </div>
-                            <div className="space-y-2">
-                                <Label>Employee ID</Label>
-                                <Input required value={formData.employeeId} onChange={e => setFormData({ ...formData, employeeId: e.target.value })} />
-                            </div>
+                            
                             <div className="space-y-2">
                                 <Label>Role</Label>
                                 <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="employee">Employee</SelectItem>
-                                        <SelectItem value="hr">HR</SelectItem>
-                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="EMPLOYEE">Employee</SelectItem>
+                                        <SelectItem value="HR">HR</SelectItem>
+                                        <SelectItem value="ADMIN">Admin</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -184,7 +181,7 @@ export default function EmployeesPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Employee ID</TableHead>
-                                <TableHead>Name</TableHead>
+                                <TableHead>User Name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Role</TableHead>
                                 <TableHead>Actions</TableHead>
@@ -193,8 +190,8 @@ export default function EmployeesPage() {
                         <TableBody>
                             {filteredUsers.map((user) => (
                                 <TableRow key={user.id}>
-                                    <TableCell className="font-mono">{user.employeeId}</TableCell>
-                                    <TableCell className="font-medium">{user.name}</TableCell>
+                                    <TableCell className="font-mono">{user.id}</TableCell>
+                                    <TableCell className="font-medium">{user.username}</TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
                                     <TableCell>

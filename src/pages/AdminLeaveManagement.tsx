@@ -12,7 +12,7 @@ export default function AdminLeaveManagement() {
     const fetchLeaves = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/leave/all`, {
+            const res = await fetch(`${API_URL}/api/auth/leave/fetch`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -33,7 +33,7 @@ export default function AdminLeaveManagement() {
         // For now, I'll assume I will add PUT /api/leave/:id/status
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/leave/${id}/status`, {
+            const res = await fetch(`${API_URL}/api/auth/leave/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

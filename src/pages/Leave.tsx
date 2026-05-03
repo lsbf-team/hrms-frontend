@@ -12,16 +12,17 @@ export default function LeavePage() {
     const { user } = useAuth();
     const [leaves, setLeaves] = useState<any[]>([]);
     const [formData, setFormData] = useState({
-        type: 'annual',
+        type: 'ANNUAL',
         startDate: '',
         endDate: '',
+        status: 'PENDING',
         reason: ''
     });
 
     const fetchLeaves = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/leave/my-leaves`, {
+            const res = await fetch(`${API_URL}/api/auth/leave/fetch`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -45,7 +46,7 @@ export default function LeavePage() {
 
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/leave/request`, {
+            const res = await fetch(`${API_URL}/api/auth/leave`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -61,7 +62,7 @@ export default function LeavePage() {
 
             toast.success('Leave requested successfully');
             fetchLeaves();
-            setFormData({ type: 'annual', startDate: '', endDate: '', reason: '' }); // Reset
+            setFormData({ type: 'ANNUAL', startDate: '', endDate: '', reason: '', status: 'PENDING' }); // Reset
         } catch (error) {
             toast.error('Error submitting request');
         }
@@ -84,9 +85,11 @@ export default function LeavePage() {
                                 >
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="annual">Annual Leave</SelectItem>
-                                        <SelectItem value="sick">Sick Leave</SelectItem>
-                                        <SelectItem value="casual">Casual Leave</SelectItem>
+                                        <SelectItem value="ANNUAL">Annual Leave</SelectItem>
+                                        <SelectItem value="SICK">Sick Leave</SelectItem>
+                                        <SelectItem value="CASUAL">Casual Leave</SelectItem>
+                                        <SelectItem value="MATERNITY">Maternity Leave</SelectItem>
+                                        <SelectItem value="PATERNITY">Paternity Leave</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

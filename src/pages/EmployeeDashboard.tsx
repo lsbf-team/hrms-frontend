@@ -173,7 +173,7 @@ export default function EmployeeDashboard() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="font-semibold text-lg">{user?.name}</h3>
+                <h3 className="font-semibold text-lg">{user?.username}</h3>
                 <p className="text-sm text-muted-foreground mono">{user?.username}</p>
                 <p className="text-sm text-muted-foreground">{user?.email}</p>
               </div>
