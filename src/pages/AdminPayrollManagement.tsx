@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 export default function AdminPayrollManagement() {
     const [users, setUsers] = useState<any[]>([]);
     const [formData, setFormData] = useState({
-        userId: '',
+        username: '',
         month: new Date().toISOString().slice(0, 7), // YYYY-MM
         basicSalary: '',
         bonuses: '0',
@@ -20,7 +20,7 @@ export default function AdminPayrollManagement() {
     useEffect(() => {
         const fetchUsers = async () => {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/users`, {
+            const res = await fetch(`${API_URL}/api/auth/fetch-users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -45,7 +45,7 @@ export default function AdminPayrollManagement() {
             if (!res.ok) throw new Error('Failed to generate payslip');
 
             toast.success('Payslip generated successfully');
-            setFormData({ ...formData, userId: '', basicSalary: '', bonuses: '0', deductions: '0' });
+            setFormData({ ...formData, username: '', basicSalary: '', bonuses: '0', deductions: '0' });
         } catch (error) {
             toast.error('Failed to generate payslip');
         }
@@ -63,11 +63,11 @@ export default function AdminPayrollManagement() {
                     <form onSubmit={handleGenerate} className="space-y-4">
                         <div className="space-y-2">
                             <Label>Employee</Label>
-                            <Select value={formData.userId} onValueChange={v => setFormData({ ...formData, userId: v })}>
+                            <Select value={formData.username} onValueChange={v => setFormData({ ...formData, username: v })}>
                                 <SelectTrigger><SelectValue placeholder="Select Employee" /></SelectTrigger>
                                 <SelectContent>
                                     {users.map(u => (
-                                        <SelectItem key={u.id} value={u.id}>{u.name} ({u.employeeId})</SelectItem>
+                                        <SelectItem key={u.id} value={u.username}>{u.username} ({u.id})</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>

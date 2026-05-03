@@ -15,7 +15,7 @@ export default function PayrollPage() {
         const fetchSlips = async () => {
             try {
                 const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-                const res = await fetch(`${API_URL}/api/payroll/my-slips`, {
+                const res = await fetch(`${API_URL}/api/auth/payslip/fetch`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();

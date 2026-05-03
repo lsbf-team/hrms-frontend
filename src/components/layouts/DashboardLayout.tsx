@@ -49,7 +49,6 @@ const adminMenuItems = [
   { icon: Calendar, label: 'Attendance', path: '/attendance' },
   { icon: FileText, label: 'Leave Management', path: '/leave-management' },
   { icon: DollarSign, label: 'Payroll', path: '/payroll-management' },
-  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
 ];
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -59,7 +58,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [notifications] = useState(3); // Mock notifications
 
-  const menuItems = ['admin', 'hr'].includes(user?.role || '') ? adminMenuItems : employeeMenuItems;
+  const menuItems = ['ADMIN', 'HR'].includes(user?.role || '') ? adminMenuItems : employeeMenuItems;
 
   const getInitials = (name: string) => {
     return name
@@ -145,7 +144,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <h2 className="text-lg font-semibold" style={{ fontFamily: 'Space Grotesk' }}>
               {menuItems.find((item) => item.path === location.pathname)?.label || 'Dashboard'}
             </h2>
-            {user?.role === 'admin' && (
+            {user?.role === 'ADMIN' && (
               <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
                 Admin
               </Badge>

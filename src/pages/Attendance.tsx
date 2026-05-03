@@ -10,12 +10,18 @@ export default function AttendancePage() {
     const { user } = useAuth();
     const [history, setHistory] = useState<any[]>([]);
     const [todayRecord, setTodayRecord] = useState<any>(null);
-
+const [formData, setFormData] = useState({
+        date: '',
+        checkIn: '',
+        checkOut: '',
+        status: 'PRESENT',
+        id: ''
+    });
     const fetchHistory = async () => {
         if (!user) return;
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/attendance/my-history`, {
+            const res = await fetch(`${API_URL}/api/auth/attendance/fetch`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -35,12 +41,16 @@ export default function AttendancePage() {
     const handleCheckIn = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/attendance/check-in`, {
+            const res = await fetch(`${API_URL}/api/auth/attendance/check-in`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    date: new Date(),
+                    checkIn: new Date().toLocaleTimeString("it-IT")}) 
             });
             if (!res.ok) throw new Error('Check-in failed');
             toast.success('Checked in successfully!');
@@ -53,13 +63,18 @@ export default function AttendancePage() {
     const handleCheckOut = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
-            const res = await fetch(`${API_URL}/api/attendance/check-out`, {
+            const res = await fetch(`${API_URL}/api/auth/attendance/check-out`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    date: new Date(),
+                    checkOut: new Date().toLocaleTimeString("it-IT")}) 
             });
+        
             if (!res.ok) throw new Error('Check-out failed');
             toast.success('Checked out successfully!');
             fetchHistory();
@@ -83,8 +98,8 @@ export default function AttendancePage() {
                                         {todayRecord.checkOut ? 'Day Completed' : 'Checked In'}
                                     </p>
                                     <p className="text-muted-foreground">
-                                        In: {new Date(todayRecord.checkIn).toLocaleTimeString()}
-                                        {todayRecord.checkOut && ` - Out: ${new Date(todayRecord.checkOut).toLocaleTimeString()}`}
+                                        In: {new Date(todayRecord.checkIn).toLocaleTimeString("it-IT")}
+                                        {todayRecord.checkOut && ` - Out: ${new Date(todayRecord.checkOut).toLocaleTimeString("it-IT")}`}
                                     </p>
                                 </>
                             ) : (
@@ -136,8 +151,8 @@ export default function AttendancePage() {
                                     <div>
                                         <p className="font-medium">{new Date(record.date).toLocaleDateString()}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {new Date(record.checkIn).toLocaleTimeString()} -
-                                            {record.checkOut ? new Date(record.checkOut).toLocaleTimeString() : ' Active'}
+                                            {new Date(record.checkIn).toLocaleTimeString("it-IT")} -
+                                            {record.checkOut ? new Date(record.checkOut).toLocaleTimeString("it-IT") : ' Active'}
                                         </p>
                                     </div>
                                 </div>

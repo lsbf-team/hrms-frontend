@@ -47,17 +47,14 @@ export default function AdminDashboard() {
       try {
         const token = JSON.parse(localStorage.getItem('dayflow_user') || '{}').token;
 
-        const [analyticsRes, usersRes, leavesRes] = await Promise.all([
-          fetch(`${API_URL}/api/analytics/dashboard`, { headers: { 'Authorization': `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/leave/all?status=pending`, { headers: { 'Authorization': `Bearer ${token}` } })
+        const [usersRes, leavesRes] = await Promise.all([
+          fetch(`${API_URL}/api/auth/fetch-users`, { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/auth/leave/fetch`, { headers: { 'Authorization': `Bearer ${token}` } })
         ]);
 
-        const analytics = await analyticsRes.json();
         const users = await usersRes.json();
         const leaves = await leavesRes.json();
 
-        setDashboardData(analytics);
         setRecentEmployees(users.slice(0, 5));
         setPendingApprovals(leaves.slice(0, 5));
       } catch (error) {
@@ -186,7 +183,7 @@ export default function AdminDashboard() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Employee</TableHead>
-                      <TableHead>Department</TableHead>
+                      <TableHead>Email</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Joined</TableHead>
                     </TableRow>
@@ -196,18 +193,18 @@ export default function AdminDashboard() {
                       <TableRow key={employee.id} className="cursor-pointer hover:bg-muted/50">
                         <TableCell>
                           <div>
-                            <p className="font-medium">{employee.name}</p>
-                            <p className="text-xs text-muted-foreground mono">{employee.employeeId}</p>
+                            <p className="font-medium">{employee.username}</p>
+                            <p className="text-xs text-muted-foreground mono">{employee.id}</p>
                           </div>
                         </TableCell>
-                        <TableCell>{employee.department || 'General'}</TableCell>
+                        <TableCell>{employee.email || 'General'}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="bg-success/10 text-success border-success/20">
                             Active
                           </Badge>
                         </TableCell>
                         <TableCell className="mono text-sm">
-                          {employee.createdAt ? format(new Date(employee.createdAt), 'MMM d, yyyy') : 'N/A'}
+                          {employee.createdAt ? format(new Date(employee.createdDate), 'MMM d, yyyy') : 'N/A'}
                         </TableCell>
                       </TableRow>
                     ))}
